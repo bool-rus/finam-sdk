@@ -4,7 +4,7 @@ use futures::StreamExt;
 use tokio::time::sleep;
 use tonic::{client::Grpc, service::{interceptor::InterceptedService, Interceptor}, transport::{Channel, ClientTlsConfig}, Request};
 
-use finam::{auth::TokenInterceptor, proto::{accounts::{accounts_service_client::AccountsServiceClient, GetAccountRequest}, assets::{assets_service_client::AssetsServiceClient, AssetsRequest, AssetsResponse}, auth::{auth_service_client::AuthServiceClient, AuthResponse, TokenDetailsRequest, TokenDetailsResponse}, google::r#type::Interval, marketdata::{market_data_service_client::MarketDataServiceClient, order_book::row::Action, SubscribeLatestTradesRequest, SubscribeOrderBookRequest}, orders::{order_trade_request, orders_service_client::OrdersServiceClient, OrderTradeRequest}}, request::Requestor, stream::StartStream, FinamApi, RETRY_DELAY};
+use finam_sdk::{auth::TokenInterceptor, proto::{accounts::{accounts_service_client::AccountsServiceClient, GetAccountRequest}, assets::{assets_service_client::AssetsServiceClient, AssetsRequest, AssetsResponse}, auth::{auth_service_client::AuthServiceClient, AuthResponse, TokenDetailsRequest, TokenDetailsResponse}, google::r#type::Interval, marketdata::{market_data_service_client::MarketDataServiceClient, order_book::row::Action, SubscribeLatestTradesRequest, SubscribeOrderBookRequest}, orders::{order_trade_request, orders_service_client::OrdersServiceClient, OrderTradeRequest}}, request::Requestor, stream::StartStream, FinamApi, RETRY_DELAY};
 
 
 
@@ -57,14 +57,14 @@ async fn go() -> Result<(),Box<dyn Error>> {
     Ok(())
 }
 
-fn proc_action(a: finam::proto::marketdata::stream_order_book::row::Action) -> Option<&'static str> {
+fn proc_action(a: finam_sdk::proto::marketdata::stream_order_book::row::Action) -> Option<&'static str> {
     Some(match a {
-        finam::proto::marketdata::stream_order_book::row::Action::Unspecified => {
+        finam_sdk::proto::marketdata::stream_order_book::row::Action::Unspecified => {
             log::error!("unspecified book action");
             return None;
         },
-        finam::proto::marketdata::stream_order_book::row::Action::Remove => "r",
-        finam::proto::marketdata::stream_order_book::row::Action::Add => "a",
-        finam::proto::marketdata::stream_order_book::row::Action::Update => "u",
+        finam_sdk::proto::marketdata::stream_order_book::row::Action::Remove => "r",
+        finam_sdk::proto::marketdata::stream_order_book::row::Action::Add => "a",
+        finam_sdk::proto::marketdata::stream_order_book::row::Action::Update => "u",
     })
 }
